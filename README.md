@@ -3,3 +3,4 @@
 ## Список лабораторных работ
 
 * **Вторая лабораторная** - ветка [`hw_2`](https://github.com/alim4ik-had/Todo-list/tree/hw_2)
+* **Третья лабораторная** - ветка [`hw_3`](https://github.com/alim4ik-had/Todo-list/tree/hw_3)
