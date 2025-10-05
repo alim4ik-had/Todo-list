@@ -93,7 +93,7 @@ h1 {
     background-color: #d8e6ff;
     color: #2a53b2;
 }
-.done {
+.ready {
     background-color: #e6f7e6;
     color: #2a8a2a;
 }
@@ -117,7 +117,7 @@ h1 {
 .ready-group .task-item {
     border-left: 6px solid #e6f7e6;
 }
-.trasher-group .task-item {
+.trash-group .task-item {
     border-left: 6px solid #ffe6e6;
 }
 

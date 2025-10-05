@@ -1,10 +1,10 @@
 import {createElement} from "../framework/render.js";
 
 
-function createTaskListComponentTemplate(groupName) {
+function createTaskListComponentTemplate(taskType, groupName) {
     return (
-        `<div class="backlog-group">
-            <h3 class="group-title backlog">${groupName}</h3>
+        `<div class="${taskType}-group">
+            <h3 class="group-title ${taskType}">${groupName}</h3>
             <ul class="task-list"></ul>
         </div>`
     );
@@ -13,11 +13,12 @@ function createTaskListComponentTemplate(groupName) {
 
 export default class TaskListView {
 
-    constructor(groupName) {
+    constructor(taskType, groupName) {
+        this.taskType = taskType;
         this.groupName = groupName;
     }
     getTemplate() {
-        return createTaskListComponentTemplate(this.groupName);
+        return createTaskListComponentTemplate(this.taskType, this.groupName);
     }
 
 
