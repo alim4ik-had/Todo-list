@@ -32,8 +32,6 @@ export default class TaskBoardPresenter{
             render(this.#taskListView, this.#taskBoard.getElement(), RenderPosition.BEFOREEND);
             currentTaskList = this.#getCurrentTaskList()
             filteredTaskList = this.#tasks.filter(task => task.status === statusList[i]);
-            console.log(filteredTaskList);
-            console.log(currentTaskList);
             for(let j = 0; j < filteredTaskList.length; j++){
                 render(new TaskView(filteredTaskList[j]), currentTaskList);
             }
