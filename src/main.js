@@ -19,14 +19,13 @@ render(new TaskBoardView(), mainContainer, RenderPosition.BEFOREEND);
 
 const taskBoardContainer = document.querySelector('.task-groups');
 
-const array = ["Бэклог", "В процессе", "Готово", "Корзина"]
 
 let currentTaskGroup;
 let currentTaskList;
 
 let groupCount = 0
 while(groupCount < 4){
-    render(new TaskListView(array[groupCount]), taskBoardContainer, RenderPosition.BEFOREEND);
+    render(new TaskListView(), taskBoardContainer, RenderPosition.BEFOREEND);
     currentTaskGroup = taskBoardContainer.children[groupCount];
     currentTaskList = currentTaskGroup.children[currentTaskGroup.children.length-1];
     for(let j = 0; j < 3; j++){
