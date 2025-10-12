@@ -17,8 +17,8 @@ render(new TaskFormView(), mainContainer, RenderPosition.AFTERBEGIN);
 const taskBoardPresenter = new TaskBoardPresenter(mainContainer, taskModel);
 taskBoardPresenter.init();
 
-const taskBoardChildren = mainContainer.children[mainContainer.children.length - 1];
-
-const trashTaskGroup = taskBoardChildren.children[taskBoardChildren.children.length - 1];
-
-render(new CleanButtonView(), trashTaskGroup, RenderPosition.BEFOREEND);
+// const taskBoardChildren = mainContainer.children[mainContainer.children.length - 1];
+//
+// const trashTaskGroup = taskBoardChildren.children[taskBoardChildren.children.length - 1];
+//
+// render(new CleanButtonView(), trashTaskGroup, RenderPosition.BEFOREEND);
