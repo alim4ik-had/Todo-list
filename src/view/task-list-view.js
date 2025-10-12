@@ -1,4 +1,4 @@
-import {createElement} from "../framework/render.js";
+import {AbstractComponent} from "../framework/view/abstract-component.js";
 
 
 function createTaskListComponentTemplate(taskType, groupName) {
@@ -11,28 +11,14 @@ function createTaskListComponentTemplate(taskType, groupName) {
 }
 
 
-export default class TaskListView {
+export default class TaskListView extends AbstractComponent{
 
     constructor(taskType, groupName) {
+        super();
         this.taskType = taskType;
         this.groupName = groupName;
     }
-    getTemplate() {
+    get template() {
         return createTaskListComponentTemplate(this.taskType, this.groupName);
-    }
-
-
-    getElement() {
-        if (!this.element) {
-            this.element = createElement(this.getTemplate());
-        }
-
-
-        return this.element;
-    }
-
-
-    removeElement() {
-        this.element = null;
     }
 }

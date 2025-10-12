@@ -1,4 +1,4 @@
-import {createElement} from "../framework/render.js";
+import {AbstractComponent} from "../framework/view/abstract-component.js";
 
 
 function createCleanButtonComponentTemplate() {
@@ -10,23 +10,9 @@ function createCleanButtonComponentTemplate() {
 }
 
 
-export default class CleanButtonView {
-    getTemplate() {
+export default class CleanButtonView extends AbstractComponent {
+
+    get template() {
         return createCleanButtonComponentTemplate();
-    }
-
-
-    getElement() {
-        if (!this.element) {
-            this.element = createElement(this.getTemplate());
-        }
-
-
-        return this.element;
-    }
-
-
-    removeElement() {
-        this.element = null;
     }
 }
