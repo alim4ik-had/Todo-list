@@ -4,26 +4,31 @@ import TaskView from "../view/task-view.js";
 import TaskBoardView from "../view/task-board-view.js";
 import {StatusLabel, statusList} from "../const.js";
 import EmptyTaskView from "../view/empty-task-view.js";
-import CleanButtonView from "../view/clean-button-view.js";
 
 export default class TaskBoardPresenter{
 
     #boardContainer = null;
     #taskModel = null;
     #taskBoard = new TaskBoardView();
-    #tasks = [];
+    #cleanButton = null;
 
     #taskListView = null;
 
 
-    constructor(boardContainer, taskModel){
+    constructor(boardContainer, taskModel, cleanButton){
         this.#boardContainer = boardContainer;
         this.#taskModel = taskModel;
+        this.#cleanButton = cleanButton;
+
+        this.#taskModel.addObserver(this.#handleModelChange.bind(this));
+    }
+
+    get tasks(){
+        return this.#taskModel.tasks;
     }
 
     init(){
 
-        this.#tasks = [...this.#taskModel.tasks];
         this.#renderBoard();
     }
 
@@ -41,7 +46,7 @@ export default class TaskBoardPresenter{
         for(let i = 0; i < statusList.length; i++){
             this.#renderTaskList(statusList[i], StatusLabel[statusList[i]])
             currentTaskList = this.#getCurrentTaskList()
-            filteredTaskList = this.#tasks.filter(task => task.status === statusList[i]);
+            filteredTaskList = this.tasks.filter(task => task.status === statusList[i]);
 
             if(filteredTaskList.length === 0)
                 this.#renderEmptyTask(currentTaskList);
@@ -68,6 +73,39 @@ export default class TaskBoardPresenter{
     }
 
     #renderCleanButton(currentTaskList){
-        render(new CleanButtonView(), currentTaskList, RenderPosition.AFTEREND)
+        render(this.#cleanButton, currentTaskList, RenderPosition.AFTEREND)
     }
+
+    createTask(){
+        const taskTitle = document.querySelector(".task-input").value.trim();
+        if(!taskTitle){
+            return;
+        }
+        this.#taskModel.addTask(taskTitle);
+        document.querySelector(".task-input").value = "";
+    }
+
+    deleteTask(){
+        const trash = this.#taskModel.getTasksByStatus("trash")
+        this.#taskModel.removeTasks(trash);
+
+    }
+
+    #handleModelChange(){
+        this.#clearBoard();
+        this.#renderBoard();
+        this.#disabledCleanButton()
+    }
+
+    #clearBoard(){
+        this.#taskBoard.element.innerHTML = '';
+    }
+
+    #disabledCleanButton(){
+        const button = this.#cleanButton.element;
+        button.disabled = this.#taskModel.getTasksByStatus("trash").length === 0;
+        button.style.cursor = button.disabled ? "default" : "pointer";
+    }
+
+
 }

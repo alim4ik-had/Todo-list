@@ -11,14 +11,25 @@ const taskModel = new TaskModel();
 const bodyContainer= document.querySelector('.body');
 const mainContainer= document.querySelector('.main-container');
 
-render(new HeaderView(), bodyContainer, RenderPosition.AFTERBEGIN);
-render(new TaskFormView(), mainContainer, RenderPosition.AFTERBEGIN);
+const formAddTaskView = new TaskFormView(
+    handleNewTaskButtonClick
+);
 
-const taskBoardPresenter = new TaskBoardPresenter(mainContainer, taskModel);
+render(new HeaderView(), bodyContainer, RenderPosition.AFTERBEGIN);
+render(formAddTaskView, mainContainer, RenderPosition.AFTERBEGIN);
+
+const cleanButton = new CleanButtonView(
+    handleCleanButtonClick
+);
+
+const taskBoardPresenter = new TaskBoardPresenter(mainContainer, taskModel, cleanButton);
 taskBoardPresenter.init();
 
-// const taskBoardChildren = mainContainer.children[mainContainer.children.length - 1];
-//
-// const trashTaskGroup = taskBoardChildren.children[taskBoardChildren.children.length - 1];
-//
-// render(new CleanButtonView(), trashTaskGroup, RenderPosition.BEFOREEND);
+
+function handleNewTaskButtonClick(){
+    taskBoardPresenter.createTask();
+}
+
+function handleCleanButtonClick(){
+    taskBoardPresenter.deleteTask()
+}
