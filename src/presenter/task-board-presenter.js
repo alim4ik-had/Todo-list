@@ -60,7 +60,7 @@ export default class TaskBoardPresenter{
     }
 
     #renderTaskList(statusType, statusName){
-        this.#taskListView = new TaskListView(statusType, statusName)
+        this.#taskListView = new TaskListView(statusType, statusName, this.#handleTaskDrop.bind(this));
         render(this.#taskListView, this.#taskBoard.element, RenderPosition.BEFOREEND);
     }
 
@@ -105,6 +105,10 @@ export default class TaskBoardPresenter{
         const button = this.#cleanButton.element;
         button.disabled = this.#taskModel.getTasksByStatus("trash").length === 0;
         button.style.cursor = button.disabled ? "default" : "pointer";
+    }
+
+    #handleTaskDrop(taskId, newStatus, preferId){
+        this.#taskModel.updateTaskStatus(taskId, newStatus, preferId);
     }
 
 

@@ -13,12 +13,26 @@ function createTaskListComponentTemplate(taskType, groupName) {
 
 export default class TaskListView extends AbstractComponent{
 
-    constructor(taskType, groupName) {
+    constructor(taskType, groupName, onTaskDrop) {
         super();
         this.taskType = taskType;
         this.groupName = groupName;
+        this.#setDropHandler(onTaskDrop);
     }
     get template() {
         return createTaskListComponentTemplate(this.taskType, this.groupName);
+    }
+    #setDropHandler(onTaskDrop) {
+        const container = this.element;
+
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            onTaskDrop(taskId, this.taskType, localStorage.getItem('preferId'));
+        });
     }
 }

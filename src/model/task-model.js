@@ -34,6 +34,17 @@ export default class TaskModel {
         this._notifyObserver();
     }
 
+    updateTaskStatus(taskId, newStatus, preferId){
+        const task = this.tasks.find(task => task.id === taskId);
+        this.#boardTasks = this.tasks.filter(task => task.id !== taskId);
+        if(task){
+            const currentId = this.tasks.findIndex(task => task.id === preferId);
+            this.#boardTasks.splice(currentId,0, task);
+            task.status = newStatus;
+            this._notifyObserver();
+        }
+    }
+
     addObserver(observer) {
         this.#observers.push(observer);
     }
