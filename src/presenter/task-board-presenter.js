@@ -2,11 +2,13 @@ import {render, RenderPosition} from "../framework/render.js";
 import TaskListView from "../view/task-list-view.js";
 import TaskView from "../view/task-view.js";
 import TaskBoardView from "../view/task-board-view.js";
-import {StatusLabel, statusList} from "../const.js";
+import {StatusLabel, statusList, UserActions} from "../const.js";
 import EmptyTaskView from "../view/empty-task-view.js";
+import LoadingView from "../view/loading-view.js";
 
 export default class TaskBoardPresenter{
 
+    #loadView = new LoadingView();
     #boardContainer = null;
     #taskModel = null;
     #taskBoard = new TaskBoardView();
@@ -27,8 +29,9 @@ export default class TaskBoardPresenter{
         return this.#taskModel.tasks;
     }
 
-    init(){
-
+    async init(){
+        await this.#tasksInit();
+        this.#clearBoard();
         this.#renderBoard();
     }
 
@@ -76,29 +79,56 @@ export default class TaskBoardPresenter{
         render(this.#cleanButton, currentTaskList, RenderPosition.AFTEREND)
     }
 
-    createTask(){
+    async createTask(){
         const taskTitle = document.querySelector(".task-input").value.trim();
         if(!taskTitle){
             return;
         }
-        this.#taskModel.addTask(taskTitle);
-        document.querySelector(".task-input").value = "";
+        try{
+            await this.#taskModel.addTask(taskTitle);
+            document.querySelector(".task-input").value = "";
+        }catch(err){
+            console.error('Ошибка при создании задачи: ', err);
+        }
     }
 
-    deleteTask(){
-        const trash = this.#taskModel.getTasksByStatus("trash")
-        this.#taskModel.removeTasks(trash);
+    async deleteTask(){
+        try{
+            await this.#taskModel.clearBasketTasks();
+        }catch(err){
+            console.error('Ошибка при очистке корзины: ', err);
+        }
 
     }
 
-    #handleModelChange(){
-        this.#clearBoard();
-        this.#renderBoard();
-        this.#disabledCleanButton()
+    #handleModelChange(event, payload){
+        switch(event){
+            case UserActions.ADD_TASK:
+            case UserActions.DELETE_TASK:
+            case UserActions.UPDATE_TASK:
+                this.#clearBoard();
+                this.#renderBoard();
+                this.#disabledCleanButton()
+                break;
+        }
     }
 
     #clearBoard(){
         this.#taskBoard.element.innerHTML = '';
+    }
+
+    #renderLoading(){
+        render(this.#loadView, this.#boardContainer);
+    }
+
+    #removeLoading(){
+        this.#loadView.element.remove();
+    }
+
+    async #tasksInit(){
+        this.#renderLoading();
+        await this.#taskModel.init();
+        this.#removeLoading();
     }
 
     #disabledCleanButton(){
@@ -107,8 +137,12 @@ export default class TaskBoardPresenter{
         button.style.cursor = button.disabled ? "default" : "pointer";
     }
 
-    #handleTaskDrop(taskId, newStatus, preferId){
-        this.#taskModel.updateTaskStatus(taskId, newStatus, preferId);
+    async #handleTaskDrop(taskId, newStatus, preferId){
+        try{
+            await this.#taskModel.updateTaskStatus(taskId, newStatus, preferId);
+        }catch(err){
+            console.error('Ошибка при обновлении статуса задачи: ', err);
+        }
     }
 
 
