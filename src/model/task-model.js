@@ -47,17 +47,23 @@ export default class TaskModel extends Observable {
 
     deleteTask(taskId){
         this.tasks = this.tasks.filter(task => task.id !== taskId);
-        this._notify(UserAction.DELETE_TASK, { id: taskId });
+        this._notify(UserActions.DELETE_TASK, { id: taskId });
     }
 
     async clearBasketTasks(){
-        console.log('ffffff');
         const basketTasks = this.getTasksByStatus('trash');
 
         try{
-            // await Promise.all(basketTasks.map(task => this.#taskApiService.deleteTask(task.id)));
-            for(const task of basketTasks){
-                await this.#taskApiService.deleteTask(task.id);
+            /*
+            * Разделил список basketTasks на части что Promise.all не тормозил
+            * */
+            const concurrency = 3;
+
+            for (let i = 0; i < basketTasks.length; i += concurrency) {
+                const batch = basketTasks.slice(i, i + concurrency);
+                await Promise.all(batch.map(task =>
+                    this.#taskApiService.deleteTask(task.id)
+                ));
             }
 
             this.tasks = this.tasks.filter(task => task.status !== 'trash');
