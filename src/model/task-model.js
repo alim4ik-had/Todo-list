@@ -10,9 +10,6 @@ export default class TaskModel extends Observable {
     constructor(taskApiService) {
         super();
         this.#taskApiService = taskApiService;
-        this.#taskApiService.tasks.then(tasks => {
-            console.log(tasks);
-        })
     }
 
 
